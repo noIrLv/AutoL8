@@ -14,9 +14,6 @@ import static com.codeborne.selenide.Selenide.open;
 import static data.SQLHelper.cleanDatabase;
 
 public class LoginTest {
-    LoginPage loginPage = new LoginPage();
-    VerificationPage verificationPage = new VerificationPage();
-
     @BeforeEach
     void setup() {
         Configuration.holdBrowserOpen = true;
@@ -30,9 +27,10 @@ public class LoginTest {
 
     @Test
     void shouldLoginValidData() {
-//        loginPage = open("http://localhost:9999/", LoginPage.class);
+        var loginPage = new LoginPage();
         var authInfo = DataHelper.getAuthInfoWithTestDataUser1();
         loginPage.validLogin(authInfo);
+        var verificationPage = new VerificationPage();
         verificationPage.verifyVerificationPage();
         var verificationCode = SQLHelper.getVerificationCode();
         verificationPage.validVerify(verificationCode);
@@ -40,6 +38,7 @@ public class LoginTest {
 
     @Test
     void shouldErrorIfUserNotInDB() {
+        var loginPage = new LoginPage();
         var authInfo = DataHelper.generateRandomUser();
         loginPage.validLogin(authInfo);
         loginPage.verifyErrorNotification();
@@ -47,6 +46,7 @@ public class LoginTest {
 
     @Test
     void shouldGetErrorIfInvalidPassword() {
+        var loginPage = new LoginPage();
         var authInfo = DataHelper.getAuthInfoWithIncorrectPass();
         loginPage.validLogin(authInfo);
         loginPage.verifyErrorNotification();
@@ -54,8 +54,10 @@ public class LoginTest {
 
     @Test
     void shouldGetErrorIfIncorrectCode() {
+        var loginPage = new LoginPage();
         var authInfo = DataHelper.getAuthInfoWithTestDataUser2();
         loginPage.validLogin(authInfo);
+        var verificationPage = new VerificationPage();
         verificationPage.verifyVerificationPage();
         var verificationCode = DataHelper.generateRandomVerificationCode();
         verificationPage.verify(verificationCode);
@@ -64,6 +66,7 @@ public class LoginTest {
 
     @Test
     void shouldBlockWhenThreeInvalidPasswords() {
+        var loginPage = new LoginPage();
         var authInfo = DataHelper.getAuthInfoWithIncorrectPass();
         loginPage.validLogin(authInfo);
         loginPage.clickButton2Times();
